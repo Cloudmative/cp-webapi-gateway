@@ -1,14 +1,22 @@
-FROM openjdk:11.0.7-jre
+FROM blueimp/chromedriver
 
-WORKDIR /home/
+USER root
 
-RUN wget https://download2.interactivebrokers.com/portal/clientportal.gw.zip
+# Install JRE
+RUN apt update && apt install -y openjdk-11-jre-headless unzip && rm -rf /var/lib/apt/lists/*
 
-RUN unzip clientportal.gw.zip && rm clientportal.gw.zip
+USER webdriver
 
-COPY conf.yaml /home/root/conf.yaml
-COPY generateCert.sh /home/generateCert.sh
+WORKDIR /home/webdriver/
+
+# Install Gateway
+RUN wget https://download2.interactivebrokers.com/portal/clientportal.gw.zip && \
+    unzip clientportal.gw.zip && rm clientportal.gw.zip
+
+COPY conf.yaml /home/webdriver/root/conf.yaml
+COPY generateCert.sh /home/webdriver/generateCert.sh
 
 EXPOSE 5000
 
-CMD ./generateCert.sh && bin/run.sh root/conf.yaml
+ENTRYPOINT ./generateCert.sh && bin/run.sh root/conf.yaml
+CMD ""
