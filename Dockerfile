@@ -2,6 +2,9 @@ FROM blueimp/chromedriver
 
 USER root
 
+# Drop dependency to X11
+RUN sed -i '${s/$/'" --headless"'/}' /opt/google/chrome/google-chrome
+
 # https://github.com/debuerreotype/docker-debian-artifacts/issues/24
 RUN mkdir -p /usr/share/man/man1
 
