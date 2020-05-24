@@ -6,6 +6,9 @@ RUN wget https://download2.interactivebrokers.com/portal/clientportal.gw.zip
 
 RUN unzip clientportal.gw.zip && rm clientportal.gw.zip
 
+COPY conf.yaml /home/root/conf.yaml
+COPY generateCert.sh /home/generateCert.sh
+
 EXPOSE 5000
 
-CMD bin/run.sh root/conf.yaml
+CMD ./generateCert.sh && bin/run.sh root/conf.yaml
