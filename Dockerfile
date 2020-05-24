@@ -2,6 +2,9 @@ FROM blueimp/chromedriver
 
 USER root
 
+# https://github.com/debuerreotype/docker-debian-artifacts/issues/24
+RUN mkdir -p /usr/share/man/man1
+
 # Install JRE
 RUN apt update && apt install -y openjdk-11-jre-headless unzip && rm -rf /var/lib/apt/lists/*
 
