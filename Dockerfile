@@ -4,7 +4,7 @@ WORKDIR /home/
 
 RUN wget https://download2.interactivebrokers.com/portal/clientportal.gw.zip
 
-RUN unzip clientportal.gw.zip
+RUN unzip clientportal.gw.zip && rm clientportal.gw.zip
 
 EXPOSE 5000
 
