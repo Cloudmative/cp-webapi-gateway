@@ -47,4 +47,5 @@ if [[ "$authenticated" == "true" ]]; then
     echo $(date) " Login succeeded"
 else
     echo $(date) " Login failed"
+    exit 1
 fi
