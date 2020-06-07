@@ -5,7 +5,7 @@ if [[ "$GATEWAY_IP" == "" ]]; then
 fi
 
 # check if already logged in
-authenticated=$(curl -ksf https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
     echo "Already logged in"
     exit 0
@@ -42,7 +42,7 @@ sleep 7
 # check for 2fa
 
 # check if login successful
-authenticated=$(curl -ksf https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
     echo "Login succeeded"
 else
