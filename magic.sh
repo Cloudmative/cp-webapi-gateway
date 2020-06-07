@@ -7,16 +7,16 @@ fi
 # check if already logged in
 authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
-    echo "Already logged in"
+    echo $(date) " Already logged in"
     exit 0
 fi
-echo "Login expired, logging back in"
+echo $(date) " Login expired, logging back in"
 
 ready=$(curl -sf http://localhost:4444/status | jq '.value.ready')
 #echo $ready
 
 if [[ "$ready" != "true" ]]; then
-    echo "Error: webdriver not available"
+    echo $(date) " Error: webdriver not available"
     exit 1
 fi
 
@@ -34,7 +34,7 @@ pwElementId=$(curl -sf http://localhost:4444/session/$sessionId/element -X POST 
 
 curl -sf http://localhost:4444/session/$sessionId/element/$pwElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"${PASSWORD}\n\"}" > /dev/null
 
-sleep 7
+sleep 50
 
 # debug
 #curl -sf http://localhost:4444/session/$sessionId/screenshot | jq -r '.value' | base64 -d > image2.png
@@ -44,7 +44,7 @@ sleep 7
 # check if login successful
 authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
-    echo "Login succeeded"
+    echo $(date) " Login succeeded"
 else
-    echo "Login failed"
+    echo $(date) " Login failed"
 fi
