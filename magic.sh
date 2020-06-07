@@ -9,6 +9,20 @@ authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status
 if [[ "$authenticated" == "true" ]]; then
     echo $(date) " Already logged in"
     exit 0
+elif [[ "$authenticated" == "false" ]]; then
+    echo $(date) "Reauthenticate"
+    triggered=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/reauthenticate | jq -r '.message')
+    if [[ "$triggered" != "triggered" ]]; then
+        echo $(date) " Reauth failed"
+        exit 1
+    fi
+    authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+    if [[ "$authenticated" != "true" ]]; then
+        echo $(date) " Reauth unsuccessful"
+        exit 1
+    fi
+    echo $(date) " Reauth successful"
+    exit 0
 fi
 echo $(date) " Login expired, logging back in"
 
