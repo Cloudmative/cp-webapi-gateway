@@ -20,12 +20,11 @@ elif [[ "$authenticated" == "false" ]]; then
         exit 1
     fi
     authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
-    if [[ "$authenticated" != "true" ]]; then
-        echo $(date) " Reauth unsuccessful"
-        exit 1
+    if [[ "$authenticated" == "true" ]]; then
+        echo $(date) " Reauth successful"
+        exit 0
     fi
-    echo $(date) " Reauth successful"
-    exit 0
+    echo $(date) " Reauth unsuccessful"
 fi
 echo $(date) " Login expired, logging back in"
 
