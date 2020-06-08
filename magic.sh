@@ -4,6 +4,9 @@ if [[ "$GATEWAY_IP" == "" ]]; then
     GATEWAY_IP="localhost"
 fi
 
+# prolong current session (since calling the other endpoints does not seem to do this)
+curl -ksfm5 https://localhost:5000/v1/portal/sso/validate > /dev/null
+
 # check if already logged in
 authenticated=$(curl -ksfm5 https://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
