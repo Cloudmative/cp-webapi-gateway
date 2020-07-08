@@ -31,7 +31,6 @@ fi
 echo $(date) " Login expired, logging back in"
 
 ready=$(curl $CURL_ARGS http://localhost:4444/status | jq '.value.ready')
-#echo $ready
 
 if [[ "$ready" != "true" ]]; then
     echo $(date) " Error: webdriver not available"
