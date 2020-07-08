@@ -25,5 +25,5 @@ COPY magic.sh /home/webdriver/magic.sh
 
 EXPOSE 5000
 
-ENTRYPOINT ./generateCert.sh && chromedriver --port=4444 --whitelisted-ips & bin/run.sh root/conf.yaml & sleep 7; while true; do ./magic.sh; sleep 60; done
+ENTRYPOINT ./generateCert.sh && chromedriver --port=4444 --whitelisted-ips & bin/run.sh root/conf.yaml & sleep 10; while true; do ./magic.sh; sleep 60; done
 CMD ""
