@@ -4,6 +4,8 @@ if [[ "$GATEWAY_IP" == "" ]]; then
     GATEWAY_IP="localhost"
 fi
 
+CURL_ARGS="-sf"
+
 # prolong current session (since calling the other endpoints does not seem to do this)
 curl -ksfm5 https://localhost:5000/v1/portal/sso/validate > /dev/null
 
@@ -28,7 +30,7 @@ elif [[ "$authenticated" == "false" ]]; then
 fi
 echo $(date) " Login expired, logging back in"
 
-ready=$(curl -sf http://localhost:4444/status | jq '.value.ready')
+ready=$(curl $CURL_ARGS http://localhost:4444/status | jq '.value.ready')
 #echo $ready
 
 if [[ "$ready" != "true" ]]; then
@@ -36,24 +38,24 @@ if [[ "$ready" != "true" ]]; then
     exit 1
 fi
 
-sessionId=$(curl -sf http://localhost:4444/session -X POST -H "Content-Type: application/json" -d '{"capabilities":{"alwaysMatch":{"acceptInsecureCerts":true}}}' | jq -r '.value.sessionId') 
+sessionId=$(curl $CURL_ARGS http://localhost:4444/session -X POST -H "Content-Type: application/json" -d '{"capabilities":{"alwaysMatch":{"acceptInsecureCerts":true}}}' | jq -r '.value.sessionId') 
 #echo $sessionId
-trap "curl -sf http://localhost:4444/session/$sessionId -X DELETE -H 'Content-Type: application/json' -d '{}' > /dev/null" EXIT
+trap "curl $CURL_ARGS http://localhost:4444/session/$sessionId -X DELETE -H 'Content-Type: application/json' -d '{}' > /dev/null" EXIT
 
-curl -sf http://localhost:4444/session/$sessionId/url -X POST -H "Content-Type: application/json" -d "{\"url\":\"https://$GATEWAY_IP:5000/\"}" > /dev/null
+curl $CURL_ARGS http://localhost:4444/session/$sessionId/url -X POST -H "Content-Type: application/json" -d "{\"url\":\"http://$GATEWAY_IP:5000/\"}" > /dev/null
 
-nameElementId=$(curl -sf http://localhost:4444/session/$sessionId/element -X POST -H "Content-Type: application/json" -d '{"using":"css selector","value":"#user_name"}' | jq -r '.value[]')
+nameElementId=$(curl $CURL_ARGS http://localhost:4444/session/$sessionId/element -X POST -H "Content-Type: application/json" -d '{"using":"css selector","value":"#user_name"}' | jq -r '.value[]')
 
-curl -sf http://localhost:4444/session/$sessionId/element/$nameElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"$USERNAME\"}" > /dev/null
+curl $CURL_ARGS http://localhost:4444/session/$sessionId/element/$nameElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"$USERNAME\"}" > /dev/null
 
-pwElementId=$(curl -sf http://localhost:4444/session/$sessionId/element -X POST -H "Content-Type: application/json" -d '{"using":"css selector","value":"#password"}' | jq -r '.value[]')
+pwElementId=$(curl $CURL_ARGS http://localhost:4444/session/$sessionId/element -X POST -H "Content-Type: application/json" -d '{"using":"css selector","value":"#password"}' | jq -r '.value[]')
 
-curl -sf http://localhost:4444/session/$sessionId/element/$pwElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"${PASSWORD}\n\"}" > /dev/null
+curl $CURL_ARGS http://localhost:4444/session/$sessionId/element/$pwElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"${PASSWORD}\n\"}" > /dev/null
 
 sleep 50
 
 # debug
-#curl -sf http://localhost:4444/session/$sessionId/screenshot | jq -r '.value' | base64 -d > image2.png
+#curl $CURL_ARGS http://localhost:4444/session/$sessionId/screenshot | jq -r '.value' | base64 -d > image2.png
 
 # check for 2fa
 
