@@ -59,7 +59,7 @@ sleep 50
 # check for 2fa
 
 # check if login successful
-authenticated=$(curl -ksfm5 http://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+authenticated=$(curl -ksfm5 http://$GATEWAY_IP:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
     echo $(date) " Login succeeded"
 else
