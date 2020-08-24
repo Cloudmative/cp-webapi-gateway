@@ -7,21 +7,21 @@ fi
 CURL_ARGS="-sf"
 
 # prolong current session (since calling the other endpoints does not seem to do this)
-curl -ksfm5 http://localhost:5000/v1/portal/sso/validate > /dev/null
+curl -ksfm5 http://localhost:5000/v1/api/tickle > /dev/null
 
 # check if already logged in
-authenticated=$(curl -ksfm5 http://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+authenticated=$(curl -ksfm5 http://localhost:5000/v1/api/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
     echo $(date) " Already logged in"
     exit 0
 elif [[ "$authenticated" == "false" ]]; then
     echo $(date) "Reauthenticate"
-    triggered=$(curl -ksfm5 http://localhost:5000/v1/portal/iserver/reauthenticate | jq -r '.message')
+    triggered=$(curl -ksfm5 http://localhost:5000/v1/api/iserver/reauthenticate | jq -r '.message')
     if [[ "$triggered" != "triggered" ]]; then
         echo $(date) " Reauth failed"
         exit 1
     fi
-    authenticated=$(curl -ksfm5 http://localhost:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+    authenticated=$(curl -ksfm5 http://localhost:5000/v1/api/iserver/auth/status | jq -r '.authenticated')
     if [[ "$authenticated" == "true" ]]; then
         echo $(date) " Reauth successful"
         exit 0
@@ -59,7 +59,7 @@ sleep 50
 # check for 2fa
 
 # check if login successful
-authenticated=$(curl -ksfm5 http://$GATEWAY_IP:5000/v1/portal/iserver/auth/status | jq -r '.authenticated')
+authenticated=$(curl -ksfm5 http://$GATEWAY_IP:5000/v1/api/iserver/auth/status | jq -r '.authenticated')
 if [[ "$authenticated" == "true" ]]; then
     echo $(date) " Login succeeded"
 else
