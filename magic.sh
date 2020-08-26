@@ -45,11 +45,11 @@ curl $CURL_ARGS http://localhost:4444/session/$sessionId/url -X POST -H "Content
 
 nameElementId=$(curl $CURL_ARGS http://localhost:4444/session/$sessionId/element -X POST -H "Content-Type: application/json" -d '{"using":"css selector","value":"#user_name"}' | jq -r '.value[]')
 
-curl $CURL_ARGS http://localhost:4444/session/$sessionId/element/$nameElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"$USERNAME\"}" > /dev/null
+curl $CURL_ARGS http://localhost:4444/session/$sessionId/element/$nameElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"$CLDMTV_USERNAME\"}" > /dev/null
 
 pwElementId=$(curl $CURL_ARGS http://localhost:4444/session/$sessionId/element -X POST -H "Content-Type: application/json" -d '{"using":"css selector","value":"#password"}' | jq -r '.value[]')
 
-curl $CURL_ARGS http://localhost:4444/session/$sessionId/element/$pwElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"${PASSWORD}\n\"}" > /dev/null
+curl $CURL_ARGS http://localhost:4444/session/$sessionId/element/$pwElementId/value -X POST -H "Content-Type: application/json" -d "{\"text\": \"${CLDMTV_PASSWORD}\n\"}" > /dev/null
 
 sleep 50
 
